@@ -52,6 +52,7 @@
 
 .sidebar-item.active {
   color: #59AAF6;
+  background: rgba(89, 170, 246, 0.08);
 }
 
 .sidebar-item.active .sidebar-icon {
@@ -79,13 +80,24 @@
   gap: 0;
 }
 
+.logout-item {
+  color: #c33;
+  margin-bottom: 20px;
+}
+
+.logout-item:hover {
+  background: rgba(204, 51, 51, 0.05);
+}
+
+.logout-item .sidebar-icon {
+  color: #c33;
+}
+
 .sidebar-footer {
-  padding: 40px 20px 0;
+  padding: 20px;
   text-align: center;
   color: #ABABAB;
   font-size: 15px;
   font-weight: 700;
   line-height: 22.5px;
 }
-
-

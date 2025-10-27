@@ -38,34 +38,40 @@ export const mockApiClient = {
     return { data: mockStats };
   },
 
-  // GET /quiz/start?topic=X
+  // GET /quiz/start?topic=X - MODIFICADO para retornar múltiplas perguntas
   startQuiz: async (topic) => {
     await delay(600);
 
-    // Criar ou recuperar sessão do quiz
-    let session = activeSessions.get(topic);
-    if (!session || session.currentIndex >= session.questions.length) {
-      session = new MockQuizSession(topic);
-      activeSessions.set(topic, session);
-    }
+    const session = new MockQuizSession(topic);
+    activeSessions.set(topic, session);
 
-    const question = session.getCurrentQuestion();
+    // Retornar TODAS as perguntas do quiz de uma vez
+    const allQuestions = session.questions.map((q) => ({
+      id: q.id,
+      question: q.question,
+      options: q.options,
+    }));
 
-    if (!question) {
+    if (allQuestions.length === 0) {
       throw {
         response: {
           status: 404,
-          data: { message: 'Não há mais perguntas disponíveis para este tópico' },
+          data: { message: 'Não há perguntas disponíveis para este tópico' },
         },
       };
     }
 
-    return { data: question };
+    return {
+      data: {
+        questions: allQuestions,
+        topic: topic,
+      }
+    };
   },
 
-  // POST /quiz/submit
-  submitQuiz: async (questionId, answer, topic) => {
-    await delay(500);
+  // POST /quiz/submit - MODIFICADO para receber todas as respostas de uma vez
+  submitQuiz: async (topic, userAnswers) => {
+    await delay(8000); // Simular processamento da IA (8 segundos)
 
     const session = activeSessions.get(topic);
 
@@ -78,18 +84,35 @@ export const mockApiClient = {
       };
     }
 
-    const result = session.submitAnswer(questionId, answer);
+    // Processar todas as respostas
+    const results = session.questions.map((question) => {
+      const userAnswer = userAnswers[question.id];
+      const isCorrect = userAnswer === question.correctAnswer;
 
-    if (result.error) {
-      throw {
-        response: {
-          status: 400,
-          data: { message: result.error },
-        },
+      return {
+        questionId: question.id,
+        question: question.question,
+        userAnswer: userAnswer || null,
+        correctAnswer: question.correctAnswer,
+        correct: isCorrect,
+        explanation: !isCorrect ? question.explanation : null,
+        suggestedCid: !isCorrect ? question.suggestedCid : null,
       };
-    }
+    });
 
-    return { data: result };
+    // Calcular estatísticas
+    const correctCount = results.filter((r) => r.correct).length;
+    const totalCount = results.length;
+    const percentage = Math.round((correctCount / totalCount) * 100);
+
+    return {
+      data: {
+        results,
+        score: correctCount,
+        total: totalCount,
+        percentage,
+      }
+    };
   },
 };
 

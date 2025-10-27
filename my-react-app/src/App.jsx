@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Quiz from './pages/Quiz';
+import Games from './pages/Games';
 import './App.css';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/games" element={<Games />} />
           <Route
             path="/dashboard"
             element={

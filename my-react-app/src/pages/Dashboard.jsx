@@ -12,6 +12,8 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredTopics, setFilteredTopics] = useState([]);
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -26,7 +28,20 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchStats();
+    setFilteredTopics(topics);
   }, []);
+
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredTopics(topics);
+    } else {
+      const filtered = topics.filter(topic =>
+        topic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        topic.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredTopics(filtered);
+    }
+  }, [searchQuery]);
 
   const fetchStats = async () => {
     try {
@@ -54,6 +69,11 @@ const Dashboard = () => {
     navigate(`/quiz/${topic}`);
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // A pesquisa já é feita automaticamente pelo useEffect
+  };
+
   const getCurrentGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Bom dia!';
@@ -68,13 +88,17 @@ const Dashboard = () => {
       <div className="dashboard-main">
         {/* Header */}
         <header className="dashboard-top-bar">
-          <div className="search-bar">
-            <input type="text" placeholder="Encontra um novo curso" />
-            <button className="search-btn">🔍</button>
-          </div>
+          <form className="search-bar" onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Pesquisar cursos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className="search-btn">🔍</button>
+          </form>
 
           <div className="user-section">
-            <div className="notification-btn">🔔</div>
             <div className="user-info">
               <div className="user-greeting">{getCurrentGreeting()}</div>
               <div className="user-name">Estudante P2P</div>
@@ -106,41 +130,65 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Stats Section */}
+        {/* Mock Indicator */}
         {useMock && (
           <div className="mock-indicator-bar">
             🧪 <strong>Modo de Teste Ativo</strong> - Usando dados simulados
           </div>
         )}
 
+        {/* Search Results Info */}
+        {searchQuery && (
+          <div className="search-results-info">
+            {filteredTopics.length > 0 ? (
+              <p>Encontrados <strong>{filteredTopics.length}</strong> resultado{filteredTopics.length !== 1 ? 's' : ''} para "{searchQuery}"</p>
+            ) : (
+              <p>Nenhum resultado encontrado para "<strong>{searchQuery}</strong>"</p>
+            )}
+          </div>
+        )}
+
         {/* Topics Section */}
         <section className="content-section">
-          <h2 className="section-title">Escolha um Tópico</h2>
-          <div className="topics-grid">
-            {topics.map((topic) => (
-              <div
-                key={topic.id}
-                className="topic-card-modern"
-                onClick={() => startQuiz(topic.id)}
-              >
-                <div className="topic-icon-wrapper" style={{ background: topic.color }}>
-                  <span className="topic-icon-large">{topic.icon}</span>
+          <h2 className="section-title">
+            {searchQuery ? 'Resultados da Pesquisa' : 'Escolha um Tópico'}
+          </h2>
+          {filteredTopics.length > 0 ? (
+            <div className="topics-grid">
+              {filteredTopics.map((topic) => (
+                <div
+                  key={topic.id}
+                  className="topic-card-modern"
+                  onClick={() => startQuiz(topic.id)}
+                >
+                  <div className="topic-icon-wrapper" style={{ background: topic.color }}>
+                    <span className="topic-icon-large">{topic.icon}</span>
+                  </div>
+                  <h3 className="topic-title">{topic.name}</h3>
+                  <p className="topic-description">{topic.description}</p>
+                  <div className="topic-footer">
+                    <span className="topic-author">
+                      <span className="author-label">By</span>
+                      <span className="author-name">Sistema P2P</span>
+                    </span>
+                  </div>
                 </div>
-                <h3 className="topic-title">{topic.name}</h3>
-                <p className="topic-description">{topic.description}</p>
-                <div className="topic-footer">
-                  <span className="topic-author">
-                    <span className="author-label">By</span>
-                    <span className="author-name">Sistema P2P</span>
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="no-results">
+              <div className="no-results-icon">🔍</div>
+              <h3>Nenhum curso encontrado</h3>
+              <p>Tente pesquisar com outras palavras-chave</p>
+              <button onClick={() => setSearchQuery('')} className="clear-search-btn">
+                Limpar pesquisa
+              </button>
+            </div>
+          )}
         </section>
 
         {/* Stats Cards */}
-        {stats && (
+        {stats && !searchQuery && (
           <section className="content-section">
             <h2 className="section-title">Suas Estatísticas</h2>
             <div className="stats-grid-modern">
