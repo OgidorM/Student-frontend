@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import apiClient from '../api/axiosClient';
-import { mockApiClient } from '../api/mockApiClient';
-import Sidebar from '../components/Sidebar';
+import { useAuth } from '../../context/AuthContext.jsx';
+import apiClient from '../../api/axiosClient.js';
+import { mockApiClient } from '../../api/mockApiClient.js';
+import Sidebar from '../../components/Sidebar/Sidebar.jsx';
+import { HiAcademicCap, HiBeaker, HiLightningBolt, HiBookOpen, HiGlobe, HiSearch, HiCheckCircle, HiChartBar, HiDownload, HiStar } from 'react-icons/hi';
 import './Dashboard.css';
 
 const useMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
@@ -18,12 +19,12 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const topics = [
-    { id: 'math', name: 'Matemática', icon: '📐', color: '#667eea', description: 'Aprende conceitos fundamentais de matemática e álgebra.' },
-    { id: 'physics', name: 'Física', icon: '⚛️', color: '#764ba2', description: 'Explora as leis da física e mecânica.' },
-    { id: 'chemistry', name: 'Química', icon: '🧪', color: '#f093fb', description: 'Descobre reações químicas e compostos.' },
-    { id: 'biology', name: 'Biologia', icon: '🧬', color: '#4facfe', description: 'Estuda organismos vivos e ecossistemas.' },
-    { id: 'history', name: 'História', icon: '📚', color: '#43e97b', description: 'Viaja através dos eventos históricos.' },
-    { id: 'geography', name: 'Geografia', icon: '🌍', color: '#fa709a', description: 'Explora o mundo e suas características.' },
+    { id: 'math', name: 'Matemática', icon: HiAcademicCap, color: '#667eea', description: 'Aprende conceitos fundamentais de matemática e álgebra.' },
+    { id: 'physics', name: 'Física', icon: HiLightningBolt, color: '#764ba2', description: 'Explora as leis da física e mecânica.' },
+    { id: 'chemistry', name: 'Química', icon: HiBeaker, color: '#f093fb', description: 'Descobre reações químicas e compostos.' },
+    { id: 'biology', name: 'Biologia', icon: HiBeaker, color: '#4facfe', description: 'Estuda organismos vivos e ecossistemas.' },
+    { id: 'history', name: 'História', icon: HiBookOpen, color: '#43e97b', description: 'Viaja através dos eventos históricos.' },
+    { id: 'geography', name: 'Geografia', icon: HiGlobe, color: '#fa709a', description: 'Explora o mundo e suas características.' },
   ];
 
   useEffect(() => {
@@ -95,7 +96,7 @@ const Dashboard = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit" className="search-btn">🔍</button>
+            <button type="submit" className="search-btn"><HiSearch/></button>
           </form>
 
           <div className="user-section">
@@ -126,14 +127,14 @@ const Dashboard = () => {
             </p>
           </div>
           <div className="hero-image">
-            <img src="https://placehold.co/741x236/59AAF6/white?text=Learning" alt="Hero" />
+            <img src="Learning-Methods.png" alt="Hero" />
           </div>
         </div>
 
         {/* Mock Indicator */}
         {useMock && (
           <div className="mock-indicator-bar">
-            🧪 <strong>Modo de Teste Ativo</strong> - Usando dados simulados
+            <HiBeaker /> <strong>Modo de Teste Ativo</strong> - Usando dados simulados
           </div>
         )}
 
@@ -155,29 +156,32 @@ const Dashboard = () => {
           </h2>
           {filteredTopics.length > 0 ? (
             <div className="topics-grid">
-              {filteredTopics.map((topic) => (
-                <div
-                  key={topic.id}
-                  className="topic-card-modern"
-                  onClick={() => startQuiz(topic.id)}
-                >
-                  <div className="topic-icon-wrapper" style={{ background: topic.color }}>
-                    <span className="topic-icon-large">{topic.icon}</span>
+              {filteredTopics.map((topic) => {
+                const IconComponent = topic.icon;
+                return (
+                  <div
+                    key={topic.id}
+                    className="topic-card-modern"
+                    onClick={() => startQuiz(topic.id)}
+                  >
+                    <div className="topic-icon-wrapper" style={{ background: topic.color }}>
+                      <IconComponent className="topic-icon-large" />
+                    </div>
+                    <h3 className="topic-title">{topic.name}</h3>
+                    <p className="topic-description">{topic.description}</p>
+                    <div className="topic-footer">
+                      <span className="topic-author">
+                        <span className="author-label">By</span>
+                        <span className="author-name">Sistema P2P</span>
+                      </span>
+                    </div>
                   </div>
-                  <h3 className="topic-title">{topic.name}</h3>
-                  <p className="topic-description">{topic.description}</p>
-                  <div className="topic-footer">
-                    <span className="topic-author">
-                      <span className="author-label">By</span>
-                      <span className="author-name">Sistema P2P</span>
-                    </span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="no-results">
-              <div className="no-results-icon">🔍</div>
+              <div className="no-results-icon"><HiSearch /></div>
               <h3>Nenhum curso encontrado</h3>
               <p>Tente pesquisar com outras palavras-chave</p>
               <button onClick={() => setSearchQuery('')} className="clear-search-btn">
@@ -193,28 +197,28 @@ const Dashboard = () => {
             <h2 className="section-title">Suas Estatísticas</h2>
             <div className="stats-grid-modern">
               <div className="stat-card-modern">
-                <div className="stat-icon">✅</div>
+                <div className="stat-icon"><HiCheckCircle /></div>
                 <div className="stat-content">
                   <div className="stat-value">{stats.quizzesCompleted || 0}</div>
                   <div className="stat-label">Quizzes Completados</div>
                 </div>
               </div>
               <div className="stat-card-modern">
-                <div className="stat-icon">🎯</div>
+                <div className="stat-icon"><HiChartBar /></div>
                 <div className="stat-content">
                   <div className="stat-value">{stats.accuracy || 0}%</div>
                   <div className="stat-label">Taxa de Acerto</div>
                 </div>
               </div>
               <div className="stat-card-modern">
-                <div className="stat-icon">📥</div>
+                <div className="stat-icon"><HiDownload /></div>
                 <div className="stat-content">
                   <div className="stat-value">{stats.materialsAccessed || 0}</div>
                   <div className="stat-label">Materiais Acessados</div>
                 </div>
               </div>
               <div className="stat-card-modern">
-                <div className="stat-icon">⭐</div>
+                <div className="stat-icon"><HiStar /></div>
                 <div className="stat-content">
                   <div className="stat-value">{stats.totalPoints || 0}</div>
                   <div className="stat-label">Pontos Totais</div>

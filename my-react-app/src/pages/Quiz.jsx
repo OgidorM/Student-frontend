@@ -4,7 +4,7 @@ import apiClient from '../api/axiosClient';
 import { mockApiClient } from '../api/mockApiClient';
 import IPFSDownload from '../components/IPFSDownload';
 import AwaitingAI from '../components/AwaitingAI';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/Sidebar/Sidebar.jsx';
 import './Quiz.css';
 
 const useMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';

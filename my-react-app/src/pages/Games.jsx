@@ -1217,7 +1217,7 @@ const Games = () => {
         </div>
 
         <div className="games-footer">
-          <a href="/dashboard" className="back-link">← Voltar ao Dashboard</a>
+          <a href="/dashboard/Dashboard" className="back-link">← Voltar ao Dashboard</a>
         </div>
       </div>
     </div>

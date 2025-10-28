@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import Sidebar from './Sidebar';
+import Sidebar from './Sidebar/Sidebar.jsx';
 import './AwaitingAI.css';
 
 const AwaitingAI = () => {
