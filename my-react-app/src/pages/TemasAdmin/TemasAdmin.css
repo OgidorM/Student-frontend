@@ -1,0 +1,253 @@
+/* TemasAdmin.css */
+
+.temas-admin-main {
+  flex: 1;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header h1 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.8rem;
+}
+
+.btn-create {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-create:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.create-form-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.create-form-card h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #2d3748;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-save,
+.btn-cancel,
+.btn-edit,
+.btn-delete {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-save {
+  background: #48bb78;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #38a169;
+  transform: translateY(-2px);
+}
+
+.btn-cancel {
+  background: #cbd5e0;
+  color: #2d3748;
+}
+
+.btn-cancel:hover {
+  background: #a0aec0;
+}
+
+.btn-edit {
+  background: #4299e1;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #3182ce;
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  background: #f56565;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #e53e3e;
+  transform: translateY(-2px);
+}
+
+.temas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tema-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.tema-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tema-view-mode {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.tema-info {
+  flex: 1;
+}
+
+.tema-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #2d3748;
+  font-size: 1.3rem;
+}
+
+.tema-info p {
+  margin: 0 0 0.75rem 0;
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+.tema-meta {
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+.tema-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.tema-edit-mode {
+  width: 100%;
+}
+
+.error-message {
+  background: #fed7d7;
+  color: #c53030;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #f56565;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #718096;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .temas-admin-main {
+    padding: 1rem;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .admin-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .tema-view-mode {
+    flex-direction: column;
+  }
+
+  .tema-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}
+

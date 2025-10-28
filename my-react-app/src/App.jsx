@@ -6,6 +6,7 @@ import Register from './pages/Register/Register.jsx';
 import Dashboard from './pages/dashboard/Dashboard.jsx';
 import Quiz from './pages/Quiz';
 import Games from './pages/Games';
+import TemasAdmin from './pages/TemasAdmin/TemasAdmin.jsx';
 import './App.css';
 
 function App() {
@@ -29,6 +30,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Quiz />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/temas"
+            element={
+              <ProtectedRoute>
+                <TemasAdmin />
               </ProtectedRoute>
             }
           />

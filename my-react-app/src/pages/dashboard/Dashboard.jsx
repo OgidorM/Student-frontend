@@ -4,13 +4,34 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import apiClient from '../../api/axiosClient.js';
 import { mockApiClient } from '../../api/mockApiClient.js';
 import Sidebar from '../../components/Sidebar/Sidebar.jsx';
-import { HiAcademicCap, HiBeaker, HiLightningBolt, HiBookOpen, HiGlobe, HiSearch, HiCheckCircle, HiChartBar, HiDownload, HiStar, HiLogout } from 'react-icons/hi';
+import { HiAcademicCap, HiBeaker, HiLightningBolt, HiBookOpen, HiGlobe, HiSearch, HiCheckCircle, HiChartBar, HiDownload, HiStar, HiLogout, HiCog } from 'react-icons/hi';
 import './Dashboard.css';
 
 const useMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
 
+// Mapeamento de ícones por nome de tema
+const iconMap = {
+  'Matemática': HiAcademicCap,
+  'Física': HiLightningBolt,
+  'Química': HiBeaker,
+  'Biologia': HiBeaker,
+  'História': HiBookOpen,
+  'Geografia': HiGlobe,
+};
+
+// Mapeamento de cores por nome de tema
+const colorMap = {
+  'Matemática': '#667eea',
+  'Física': '#764ba2',
+  'Química': '#f093fb',
+  'Biologia': '#4facfe',
+  'História': '#43e97b',
+  'Geografia': '#fa709a',
+};
+
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
+  const [temas, setTemas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,31 +39,25 @@ const Dashboard = () => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
 
-  const topics = [
-    { id: 'math', name: 'Matemática', icon: HiAcademicCap, color: '#667eea', description: 'Aprende conceitos fundamentais de matemática e álgebra.' },
-    { id: 'physics', name: 'Física', icon: HiLightningBolt, color: '#764ba2', description: 'Explora as leis da física e mecânica.' },
-    { id: 'chemistry', name: 'Química', icon: HiBeaker, color: '#f093fb', description: 'Descobre reações químicas e compostos.' },
-    { id: 'biology', name: 'Biologia', icon: HiBeaker, color: '#4facfe', description: 'Estuda organismos vivos e ecossistemas.' },
-    { id: 'history', name: 'História', icon: HiBookOpen, color: '#43e97b', description: 'Viaja através dos eventos históricos.' },
-    { id: 'geography', name: 'Geografia', icon: HiGlobe, color: '#fa709a', description: 'Explora o mundo e suas características.' },
-  ];
+  // Verificar se o usuário é professor (pode ser baseado em user.tipo ou role)
+  const isProfessor = user?.tipo === 'Professor' || user?.role === 'professor';
 
   useEffect(() => {
     fetchStats();
-    setFilteredTopics(topics);
+    fetchTemas();
   }, []);
 
   useEffect(() => {
     if (searchQuery.trim() === '') {
-      setFilteredTopics(topics);
+      setFilteredTopics(temas);
     } else {
-      const filtered = topics.filter(topic =>
-        topic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        topic.description.toLowerCase().includes(searchQuery.toLowerCase())
+      const filtered = temas.filter(tema =>
+        tema.nome.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tema.descricao.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredTopics(filtered);
     }
-  }, [searchQuery]);
+  }, [searchQuery, temas]);
 
   const fetchStats = async () => {
     try {
@@ -61,13 +76,37 @@ const Dashboard = () => {
     }
   };
 
+  const fetchTemas = async () => {
+    try {
+      let response;
+      if (useMock) {
+        response = await mockApiClient.getTemas();
+      } else {
+        response = await apiClient.get('/temas');
+      }
+
+      // Mapear temas com ícones e cores
+      const temasComIcones = response.data.map(tema => ({
+        ...tema,
+        icon: iconMap[tema.nome] || HiBookOpen,
+        color: colorMap[tema.nome] || '#667eea',
+      }));
+
+      setTemas(temasComIcones);
+      setFilteredTopics(temasComIcones);
+    } catch (err) {
+      console.error('Erro ao buscar temas:', err);
+      setError('Falha ao carregar temas');
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const startQuiz = (topic) => {
-    navigate(`/quiz/${topic}`);
+  const startQuiz = (temaId) => {
+    navigate(`/quiz/${temaId}`);
   };
 
   const handleSearch = (e) => {
@@ -138,6 +177,19 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* Admin Access - Apenas para Professores */}
+        {isProfessor && (
+          <div className="admin-access-section">
+            <div className="admin-access-info">
+              <h3>Gestão de Temas</h3>
+              <p>Crie, edite e gerencie os temas de aprendizagem disponíveis para os alunos</p>
+            </div>
+            <button className="admin-btn" onClick={() => navigate('/admin/temas')}>
+              <HiCog /> Gerir Temas
+            </button>
+          </div>
+        )}
+
         {/* Search Results Info */}
         {searchQuery && (
           <div className="search-results-info">
@@ -149,83 +201,87 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Topics Section */}
-        <section className="content-section">
-          <h2 className="section-title">
-            {searchQuery ? 'Resultados da Pesquisa' : 'Escolha um Tópico'}
-          </h2>
-          {filteredTopics.length > 0 ? (
-            <div className="topics-grid">
-              {filteredTopics.map((topic) => {
-                const IconComponent = topic.icon;
-                return (
-                  <div
-                    key={topic.id}
-                    className="topic-card-modern"
-                    onClick={() => startQuiz(topic.id)}
-                  >
-                    <div className="topic-icon-wrapper" style={{ background: topic.color }}>
-                      <IconComponent className="topic-icon-large" />
-                    </div>
-                    <h3 className="topic-title">{topic.name}</h3>
-                    <p className="topic-description">{topic.description}</p>
-                    <div className="topic-footer">
-                      <span className="topic-author">
-                        <span className="author-label">By</span>
-                        <span className="author-name">Sistema P2P</span>
-                      </span>
-                    </div>
+        {/* Topics Grid */}
+        <div className="content-section">
+          <h2 className="section-title">Tópicos de Aprendizagem</h2>
+
+          {loading && <p>Carregando temas...</p>}
+          {error && <p className="error-message">{error}</p>}
+
+          <div className="topics-grid">
+            {filteredTopics.map((tema) => {
+              const IconComponent = tema.icon;
+              return (
+                <div
+                  key={tema.id}
+                  className="topic-card"
+                  onClick={() => startQuiz(tema.id)}
+                  style={{ '--topic-color': tema.color }}
+                >
+                  <div className="topic-icon">
+                    <IconComponent />
                   </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="no-results">
-              <div className="no-results-icon"><HiSearch /></div>
-              <h3>Nenhum curso encontrado</h3>
-              <p>Tente pesquisar com outras palavras-chave</p>
-              <button onClick={() => setSearchQuery('')} className="clear-search-btn">
-                Limpar pesquisa
-              </button>
+                  <h3 className="topic-name">{tema.nome}</h3>
+                  <p className="topic-description">{tema.descricao}</p>
+                  <button className="topic-btn">Começar Quiz</button>
+                </div>
+              );
+            })}
+          </div>
+
+          {filteredTopics.length === 0 && !loading && (
+            <div className="empty-state">
+              <p>Nenhum tema disponível no momento.</p>
             </div>
           )}
-        </section>
+        </div>
 
-        {/* Stats Cards */}
-        {stats && !searchQuery && (
-          <section className="content-section">
-            <h2 className="section-title">Suas Estatísticas</h2>
-            <div className="stats-grid-modern">
-              <div className="stat-card-modern">
-                <div className="stat-icon"><HiCheckCircle /></div>
-                <div className="stat-content">
-                  <div className="stat-value">{stats.quizzesCompleted || 0}</div>
-                  <div className="stat-label">Quizzes Completados</div>
+        {/* Stats Section */}
+        {stats && (
+          <div className="stats-section">
+            <h2 className="section-title">As Tuas Estatísticas</h2>
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <HiCheckCircle />
+                </div>
+                <div className="stat-info">
+                  <p className="stat-label">Quizzes Completos</p>
+                  <p className="stat-value">{stats.quizzesCompleted}</p>
                 </div>
               </div>
-              <div className="stat-card-modern">
-                <div className="stat-icon"><HiChartBar /></div>
-                <div className="stat-content">
-                  <div className="stat-value">{stats.accuracy || 0}%</div>
-                  <div className="stat-label">Taxa de Acerto</div>
+
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <HiChartBar />
+                </div>
+                <div className="stat-info">
+                  <p className="stat-label">Precisão Média</p>
+                  <p className="stat-value">{stats.accuracy}%</p>
                 </div>
               </div>
-              <div className="stat-card-modern">
-                <div className="stat-icon"><HiDownload /></div>
-                <div className="stat-content">
-                  <div className="stat-value">{stats.materialsAccessed || 0}</div>
-                  <div className="stat-label">Materiais Acessados</div>
+
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <HiDownload />
+                </div>
+                <div className="stat-info">
+                  <p className="stat-label">Materiais Acedidos</p>
+                  <p className="stat-value">{stats.materialsAccessed}</p>
                 </div>
               </div>
-              <div className="stat-card-modern">
-                <div className="stat-icon"><HiStar /></div>
-                <div className="stat-content">
-                  <div className="stat-value">{stats.totalPoints || 0}</div>
-                  <div className="stat-label">Pontos Totais</div>
+
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <HiStar />
+                </div>
+                <div className="stat-info">
+                  <p className="stat-label">Pontos Totais</p>
+                  <p className="stat-value">{stats.totalPoints}</p>
                 </div>
               </div>
             </div>
-          </section>
+          </div>
         )}
       </div>
     </div>

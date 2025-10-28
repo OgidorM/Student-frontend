@@ -1,12 +1,16 @@
 import {
   mockUsers,
   mockStats,
+  mockTemas,
   MockQuizSession,
   activeSessions,
 } from './mockData';
 
 // Simulador de delay de rede (para tornar mais realista)
 const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Armazenamento temporário de temas (simula banco de dados)
+let temasStorage = [...mockTemas];
 
 // Mock API Client
 export const mockApiClient = {
@@ -149,9 +153,118 @@ export const mockApiClient = {
       }
     };
   },
-};
 
-// Função auxiliar para resetar todas as sessões (útil para testes)
-export const resetAllSessions = () => {
-  activeSessions.clear();
+  // ===== GESTÃO DE TEMAS =====
+
+  // GET /temas - Lista todos os temas disponíveis
+  getTemas: async () => {
+    await delay(400);
+    return {
+      data: temasStorage.filter(tema => tema.ativo)
+    };
+  },
+
+  // GET /temas/{id} - Obtém detalhes de um tema específico
+  getTema: async (id) => {
+    await delay(300);
+    const tema = temasStorage.find(t => t.id === parseInt(id));
+
+    if (!tema) {
+      throw {
+        response: {
+          status: 404,
+          data: { error: 'Tema não encontrado.' },
+        },
+      };
+    }
+
+    return { data: tema };
+  },
+
+  // POST /temas - Cria um novo tema
+  createTema: async (temaData) => {
+    await delay(500);
+
+    if (!temaData.nome || !temaData.descricao) {
+      throw {
+        response: {
+          status: 400,
+          data: { error: 'Nome e descrição são obrigatórios.' },
+        },
+      };
+    }
+
+    const novoTema = {
+      id: Math.max(...temasStorage.map(t => t.id), 0) + 1,
+      nome: temaData.nome,
+      descricao: temaData.descricao,
+      criacao: new Date().toISOString(),
+      ativo: true,
+    };
+
+    temasStorage.push(novoTema);
+
+    return {
+      status: 201,
+      data: novoTema,
+    };
+  },
+
+  // PUT /temas/{id} - Atualiza um tema existente
+  updateTema: async (id, temaData) => {
+    await delay(500);
+
+    const index = temasStorage.findIndex(t => t.id === parseInt(id));
+
+    if (index === -1) {
+      throw {
+        response: {
+          status: 404,
+          data: { error: 'Tema não encontrado.' },
+        },
+      };
+    }
+
+    const temaAtualizado = {
+      ...temasStorage[index],
+      ...(temaData.nome && { nome: temaData.nome }),
+      ...(temaData.descricao && { descricao: temaData.descricao }),
+    };
+
+    temasStorage[index] = temaAtualizado;
+
+    return {
+      status: 200,
+      data: temaAtualizado,
+    };
+  },
+
+  // DELETE /temas/{id} - Exclui (marca como inativo) um tema
+  deleteTema: async (id) => {
+    await delay(500);
+
+    const index = temasStorage.findIndex(t => t.id === parseInt(id));
+
+    if (index === -1) {
+      throw {
+        response: {
+          status: 404,
+          data: { error: 'Tema não encontrado.' },
+        },
+      };
+    }
+
+    // Marca como inativo ao invés de remover
+    temasStorage[index].ativo = false;
+
+    return {
+      status: 200,
+      data: { message: 'Tema excluído com sucesso' },
+    };
+  },
+
+  // Função auxiliar para resetar todas as sessões (útil para testes)
+  resetAllSessions: () => {
+    activeSessions.clear();
+  },
 };

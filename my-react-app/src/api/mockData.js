@@ -4,11 +4,22 @@ export const mockUsers = [
         username: 'aluno1',
         password: 'senha123',
         token: 'mock-jwt-token-aluno1-xyz123abc456',
+        id: 1,
+        tipo: 'Aluno'
     },
     {
         username: 'teste',
         password: 'teste',
         token: 'mock-jwt-token-teste-abc789def012',
+        id: 2,
+        tipo: 'Aluno'
+    },
+    {
+        username: 'professor',
+        password: 'professor',
+        token: 'mock-jwt-token-professor-prof123',
+        id: 3,
+        tipo: 'Professor'
     },
 ];
 
@@ -18,6 +29,52 @@ export const mockStats = {
     materialsAccessed: 25,
     totalPoints: 1850,
 };
+
+// Mock data para temas
+export const mockTemas = [
+    {
+        id: 1,
+        nome: 'Matemática',
+        descricao: 'Aprende conceitos fundamentais de matemática e álgebra.',
+        criacao: '2025-01-15T10:00:00Z',
+        ativo: true,
+    },
+    {
+        id: 2,
+        nome: 'Física',
+        descricao: 'Explora as leis da física e mecânica.',
+        criacao: '2025-01-15T10:30:00Z',
+        ativo: true,
+    },
+    {
+        id: 3,
+        nome: 'Química',
+        descricao: 'Descobre reações químicas e compostos.',
+        criacao: '2025-01-15T11:00:00Z',
+        ativo: true,
+    },
+    {
+        id: 4,
+        nome: 'Biologia',
+        descricao: 'Estuda organismos vivos e ecossistemas.',
+        criacao: '2025-01-16T09:00:00Z',
+        ativo: true,
+    },
+    {
+        id: 5,
+        nome: 'História',
+        descricao: 'Viaja através dos eventos históricos.',
+        criacao: '2025-01-16T10:00:00Z',
+        ativo: true,
+    },
+    {
+        id: 6,
+        nome: 'Geografia',
+        descricao: 'Explora o mundo e suas características.',
+        criacao: '2025-01-16T11:00:00Z',
+        ativo: true,
+    },
+];
 
 export const mockQuestions = {
     math: [
@@ -206,4 +263,3 @@ export class MockQuizSession {
 
 // Armazenamento de sessões ativas (simula estado do servidor)
 export const activeSessions = new Map();
-
