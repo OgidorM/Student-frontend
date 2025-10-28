@@ -1,20 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext.jsx';
 import apiClient from '../../api/axiosClient.js';
 import { mockApiClient } from '../../api/mockApiClient.js';
 import { gsap } from 'gsap';
-import { HiBeaker, HiExclamation } from 'react-icons/hi';
-import './Login.css';
+import { HiBeaker, HiExclamation, HiCheckCircle } from 'react-icons/hi';
+import './Register.css';
 
 const useMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
 
-const Login = () => {
+const Register = () => {
     const [nome, setNome] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [datanascimento, setDatanascimento] = useState('');
+    const [tipo, setTipo] = useState('Aluno'); // Default tipo with capital letter
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
     const navigate = useNavigate();
 
     const containerRef = useRef(null);
@@ -27,13 +29,11 @@ const Login = () => {
         // Animate each bubble from right to left
         bubbles.forEach((bubble) => {
             if (bubble) {
-                // Random properties for each bubble
                 const randomY = Math.random() * window.innerHeight;
-                const randomScale = 0.5 + Math.random();
+                const randomScale = 0.5 + Math.random() * 1;
                 const randomDelay = Math.random() * 2;
                 const randomDuration = 4 + Math.random() * 3;
 
-                // Set initial position at right side
                 gsap.set(bubble, {
                     x: window.innerWidth + 200,
                     y: randomY,
@@ -41,7 +41,6 @@ const Login = () => {
                     opacity: 0.7,
                 });
 
-                // Move from right to left
                 gsap.to(bubble, {
                     x: -300,
                     duration: randomDuration,
@@ -51,7 +50,6 @@ const Login = () => {
                     repeatDelay: Math.random() * 2,
                 });
 
-                // Floating motion up and down
                 gsap.to(bubble, {
                     y: `+=${Math.random() * 200 - 100}`,
                     duration: 2 + Math.random() * 2,
@@ -61,10 +59,9 @@ const Login = () => {
                     delay: randomDelay,
                 });
 
-                // Pulse opacity
                 gsap.to(bubble, {
                     opacity: 0.3 + Math.random() * 0.4,
-                    duration: 1.5 + Math.random(),
+                    duration: 1.5 + Math.random() * 1,
                     repeat: -1,
                     yoyo: true,
                     ease: "sine.inOut",
@@ -72,7 +69,6 @@ const Login = () => {
             }
         });
 
-        // Container entrance animation
         if (containerRef.current) {
             gsap.set(containerRef.current, {
                 scale: 0.98,
@@ -88,7 +84,6 @@ const Login = () => {
             });
         }
 
-        // Button animation - gentle pulse effect
         if (buttonRef.current) {
             gsap.to(buttonRef.current, {
                 scale: 1.02,
@@ -98,7 +93,6 @@ const Login = () => {
                 ease: "sine.inOut",
             });
 
-            // Add shine effect
             gsap.to(buttonRef.current, {
                 boxShadow: "0 15px 35px rgba(58, 125, 232, 0.5)",
                 duration: 1.5,
@@ -108,7 +102,6 @@ const Login = () => {
             });
         }
 
-        // Cleanup
         return () => {
             gsap.killTweensOf(bubbles);
             if (containerRef.current) {
@@ -155,37 +148,51 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setSuccess('');
+
+        // Validate passwords match
+        if (password !== confirmPassword) {
+            setError('As palavras-passe não coincidem');
+            return;
+        }
+
+        // Validate password strength
+        if (password.length < 6) {
+            setError('A palavra-passe deve ter pelo menos 6 caracteres');
+            return;
+        }
+
         setLoading(true);
 
         try {
-            let response;
-
             if (useMock) {
-                response = await mockApiClient.login(nome, password);
+                // Mock registration
+                await mockApiClient.register(nome, password);
             } else {
-                response = await apiClient.post('/auth/login', {
+                await apiClient.post('/auth/register', {
                     nome,
                     password,
+                    tipo,
+                    datanascimento: datanascimento || undefined
                 });
             }
 
-            // API retorna { message, user }
-            if (response.status === 200 && response.data.user) {
-                login(response.data.user);
-                navigate('/dashboard');
-            } else {
-                setError('Falha no login');
-            }
+            setSuccess('Conta criada com sucesso! Redirecionando para login...');
+
+            // Redirect to login after 2 seconds
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
         } catch (err) {
-            console.error('Erro no login:', err);
-            setError(err.response?.data?.error || 'Falha no login. Verifique suas credenciais.');
+            console.error('Erro no registo:', err);
+            setError(err.response?.data?.error || 'Falha no registo. Tente novamente.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="login-page">
+        <div className="register-page">
             <div className="animated-bubbles-background">
                 {[...Array(40)].map((_, i) => (
                     <div
@@ -195,16 +202,16 @@ const Login = () => {
                     />
                 ))}
             </div>
-            <div className="login-container-modern" ref={containerRef}>
-                <div className="login-left">
-                    <div className="login-hero">
-                        <h2 className="hero-heading">Bem-vindo de volta!</h2>
+            <div className="register-container-modern" ref={containerRef}>
+                <div className="register-left">
+                    <div className="register-hero">
+                        <h2 className="hero-heading">Junte-se a nós!</h2>
                         <p className="hero-text">
-                            Acesse sua conta e continue aprendendo com a comunidade P2P
+                            Crie sua conta e comece a aprender com a melhor plataforma P2P
                         </p>
                     </div>
 
-                    <div className="login-illustration">
+                    <div className="register-illustration">
                         <img
                             src="plabranco.png"
                             alt="Learning"
@@ -212,22 +219,22 @@ const Login = () => {
                     </div>
                 </div>
 
-                <div className="login-right">
-                    <div className="login-form-wrapper">
+                <div className="register-right">
+                    <div className="register-form-wrapper">
                         {useMock && (
                             <div className="mock-notice-modern">
                                 <HiBeaker className="mock-icon" />
                                 <div>
                                     <strong>Modo de Teste</strong>
-                                    <p>Use: <code>aluno1</code> / <code>senha123</code></p>
+                                    <p>Registos são simulados neste modo</p>
                                 </div>
                             </div>
                         )}
 
-                        <h2 className="form-title">Iniciar Sessão</h2>
-                        <p className="form-subtitle">Entre com suas credenciais</p>
+                        <h2 className="form-title">Criar Conta</h2>
+                        <p className="form-subtitle">Preencha os dados abaixo</p>
 
-                        <form onSubmit={handleSubmit} className="login-form-modern">
+                        <form onSubmit={handleSubmit} className="register-form-modern">
                             <div className="form-group-modern">
                                 <label htmlFor="nome">Nome de Utilizador</label>
                                 <input
@@ -240,6 +247,21 @@ const Login = () => {
                                     placeholder="Digite seu nome de utilizador"
                                     className="input-modern"
                                 />
+                            </div>
+
+                            <div className="form-group-modern">
+                                <label htmlFor="tipo">Tipo de Utilizador</label>
+                                <select
+                                    id="tipo"
+                                    value={tipo}
+                                    onChange={(e) => setTipo(e.target.value)}
+                                    required
+                                    disabled={loading}
+                                    className="input-modern select-modern"
+                                >
+                                    <option value="Aluno">Aluno</option>
+                                    <option value="Professor">Professor</option>
+                                </select>
                             </div>
 
                             <div className="form-group-modern">
@@ -256,6 +278,32 @@ const Login = () => {
                                 />
                             </div>
 
+                            <div className="form-group-modern">
+                                <label htmlFor="confirmPassword">Confirmar Palavra-passe</label>
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                    disabled={loading}
+                                    placeholder="Confirme sua password"
+                                    className="input-modern"
+                                />
+                            </div>
+
+                            <div className="form-group-modern">
+                                <label htmlFor="datanascimento">Data de Nascimento (Opcional)</label>
+                                <input
+                                    type="date"
+                                    id="datanascimento"
+                                    value={datanascimento}
+                                    onChange={(e) => setDatanascimento(e.target.value)}
+                                    disabled={loading}
+                                    className="input-modern"
+                                />
+                            </div>
+
                             {error && (
                                 <div className="error-message-modern">
                                     <HiExclamation className="error-icon" />
@@ -263,11 +311,18 @@ const Login = () => {
                                 </div>
                             )}
 
+                            {success && (
+                                <div className="success-message-modern">
+                                    <HiCheckCircle className="success-icon" />
+                                    {success}
+                                </div>
+                            )}
+
                             <button
                                 ref={buttonRef}
                                 type="submit"
                                 disabled={loading}
-                                className="login-button-modern"
+                                className="register-button-modern"
                                 onMouseEnter={handleButtonHover}
                                 onMouseLeave={handleButtonLeave}
                                 onClick={handleButtonClick}
@@ -275,16 +330,16 @@ const Login = () => {
                                 {loading ? (
                                     <>
                                         <span className="spinner"></span>
-                                        Entrando...
+                                        Registando...
                                     </>
                                 ) : (
-                                    'Entrar'
+                                    'Criar Conta'
                                 )}
                             </button>
                         </form>
 
-                        <div className="login-footer">
-                            <p>Novo na plataforma? <a href="/register">Criar conta</a></p>
+                        <div className="register-footer">
+                            <p>Já tem uma conta? <a href="/login">Iniciar sessão</a></p>
                         </div>
                     </div>
                 </div>
@@ -293,5 +348,4 @@ const Login = () => {
     );
 };
 
-export default Login;
-
+export default Register;

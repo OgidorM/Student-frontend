@@ -1,0 +1,205 @@
+/* --- BASE STYLES --- */
+.register-page {
+    height: 100vh;
+    width: 100vw;
+    background: #0D1B2A;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    padding: 20px;
+    padding-left: 80px;
+}
+
+.register-container-modern {
+    width: 100%;
+    max-width: 1100px;
+    max-height: calc(100vh - 40px);
+    min-height: 600px;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    z-index: 100;
+    opacity: 1 !important;
+}
+
+/* --- Left Side - Branding with Glass Effect --- */
+.register-left {
+    flex: 1.2;
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    background: rgba(58, 125, 232, 0.25);
+    backdrop-filter: blur(20px) brightness(1.1);
+    -webkit-backdrop-filter: blur(20px) brightness(1.1);
+    z-index: 1;
+}
+
+.register-left::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 30px 0 0 30px;
+    box-shadow:
+        inset 6px 6px 0px -6px rgba(255, 255, 255, 0.4),
+        inset 0 0 8px 1px rgba(255, 255, 255, 0.3),
+        inset -5px 0 10px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+}
+
+.register-hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+
+.register-illustration img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 16px;
+    opacity: 1;
+}
+
+/* --- Right Side - Form --- */
+.register-right {
+    flex: 1;
+    padding: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 2;
+}
+
+.register-form-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.register-form-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.select-modern {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%233A373F' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+}
+
+.select-modern:disabled {
+    cursor: not-allowed;
+}
+
+.success-message-modern {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #155724;
+}
+
+.success-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    color: #155724;
+}
+
+.register-button-modern {
+    width: 100%;
+    height: 56px;
+    background: linear-gradient(135deg, #3A7DE8 0%, #2A5BA6 100%);
+    border: none;
+    border-radius: 15px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+    box-shadow: 0 10px 20px rgba(58, 125, 232, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.register-button-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.register-button-modern:hover::before {
+    left: 100%;
+}
+
+.register-button-modern:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(58, 125, 232, 0.4);
+}
+
+.register-button-modern:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 5px 15px rgba(58, 125, 232, 0.3);
+}
+
+.register-button-modern:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.register-footer {
+    margin-top: 32px;
+    text-align: center;
+}
+
+.register-footer p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #ABABAB;
+    margin: 0;
+}
+
+.register-footer a {
+    color: #3A7DE8;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.register-footer a:hover {
+    color: #2A5BA6;
+    text-decoration: underline;
+}

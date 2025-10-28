@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import apiClient from '../../api/axiosClient.js';
 import { mockApiClient } from '../../api/mockApiClient.js';
 import Sidebar from '../../components/Sidebar/Sidebar.jsx';
-import { HiAcademicCap, HiBeaker, HiLightningBolt, HiBookOpen, HiGlobe, HiSearch, HiCheckCircle, HiChartBar, HiDownload, HiStar } from 'react-icons/hi';
+import { HiAcademicCap, HiBeaker, HiLightningBolt, HiBookOpen, HiGlobe, HiSearch, HiCheckCircle, HiChartBar, HiDownload, HiStar, HiLogout } from 'react-icons/hi';
 import './Dashboard.css';
 
 const useMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
@@ -15,7 +15,7 @@ const Dashboard = () => {
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredTopics, setFilteredTopics] = useState([]);
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const topics = [
@@ -102,7 +102,7 @@ const Dashboard = () => {
           <div className="user-section">
             <div className="user-info">
               <div className="user-greeting">{getCurrentGreeting()}</div>
-              <div className="user-name">Estudante P2P</div>
+              <div className="user-name">{user?.nome || 'Estudante P2P'}</div>
             </div>
             <img
               src="https://placehold.co/60x60/59AAF6/white?text=U"

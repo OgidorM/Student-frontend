@@ -100,10 +100,9 @@
 .user-avatar {
     width: 60px;
     height: 60px;
-    border-radius: 100px;
+    border-radius: 50%;
     object-fit: cover;
 }
-
 /* Hero Banner */
 .hero-banner {
     margin: 15px 50px;

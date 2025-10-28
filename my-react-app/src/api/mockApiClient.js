@@ -11,24 +11,59 @@ const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
 // Mock API Client
 export const mockApiClient = {
   // POST /auth/login
-  login: async (username, password) => {
+  login: async (nome, password) => {
     await delay(500);
 
     const user = mockUsers.find(
-      (u) => u.username === username && u.password === password
+      (u) => u.username === nome && u.password === password
     );
 
     if (!user) {
       throw {
         response: {
           status: 401,
-          data: { message: 'Credenciais inválidas' },
+          data: { error: 'Credenciais inválidas.' },
         },
       };
     }
 
+    // Return user data matching API structure
     return {
-      data: { token: user.token },
+      status: 200,
+      data: {
+        message: 'Login bem-sucedido.',
+        user: {
+          nome: user.username,
+          id: user.id,
+          tipo: 'Aluno'
+        }
+      },
+    };
+  },
+
+  // POST /auth/register
+  register: async (nome, password) => {
+    await delay(500);
+
+    // Check if user already exists
+    const existingUser = mockUsers.find((u) => u.username === nome);
+
+    if (existingUser) {
+      throw {
+        response: {
+          status: 409,
+          data: { error: 'Nome de utilizador já existente.' },
+        },
+      };
+    }
+
+    // Simulate successful registration
+    return {
+      status: 201,
+      data: {
+        message: 'Utilizador criado com sucesso.',
+        user: { nome, id: Date.now() }
+      },
     };
   },
 
