@@ -70,7 +70,6 @@ const Dashboard = () => {
       setStats(response.data);
     } catch (err) {
       console.error('Erro ao buscar estatísticas:', err);
-      setError('Falha ao carregar estatísticas');
     } finally {
       setLoading(false);
     }
@@ -223,7 +222,7 @@ const Dashboard = () => {
                   </div>
                   <h3 className="topic-name">{tema.nome}</h3>
                   <p className="topic-description">{tema.descricao}</p>
-                  <button className="topic-btn">Começar Quiz</button>
+                  <button className="topic-btn">Ver Quizes</button>
                 </div>
               );
             })}

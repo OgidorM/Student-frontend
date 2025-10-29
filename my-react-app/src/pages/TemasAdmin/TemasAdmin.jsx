@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { mockApiClient } from '../../api/mockApiClient.js';
 import apiClient from '../../api/axiosClient.js';
 import Sidebar from '../../components/Sidebar/Sidebar.jsx';
-import { HiPlus, HiPencil, HiTrash, HiCheck, HiX } from 'react-icons/hi';
+import { HiPlus, HiPencil, HiTrash, HiCheck, HiX, HiArrowLeft } from 'react-icons/hi';
+import { gsap } from 'gsap';
+import { useNavigate } from 'react-router-dom';
 import './TemasAdmin.css';
 
 const useMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
@@ -15,8 +17,68 @@ const TemasAdmin = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [formData, setFormData] = useState({ nome: '', descricao: '' });
 
+  const bubblesRef = useRef([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetchTemas();
+  }, []);
+
+  useEffect(() => {
+    const bubbles = bubblesRef.current;
+
+    // Animate each bubble from right to left
+    bubbles.forEach((bubble) => {
+      if (bubble) {
+        // Random properties for each bubble
+        const randomY = Math.random() * window.innerHeight;
+        const randomScale = 0.5 + Math.random();
+        const randomDelay = Math.random() * 2;
+        const randomDuration = 4 + Math.random() * 3;
+
+        // Set initial position at right side
+        gsap.set(bubble, {
+          x: window.innerWidth + 200,
+          y: randomY,
+          scale: randomScale,
+          opacity: 0.7,
+        });
+
+        // Move from right to left
+        gsap.to(bubble, {
+          x: -300,
+          duration: randomDuration,
+          delay: randomDelay,
+          ease: "none",
+          repeat: -1,
+          repeatDelay: Math.random() * 2,
+        });
+
+        // Floating motion up and down
+        gsap.to(bubble, {
+          y: `+=${Math.random() * 200 - 100}`,
+          duration: 2 + Math.random() * 2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: randomDelay,
+        });
+
+        // Pulse opacity
+        gsap.to(bubble, {
+          opacity: 0.3 + Math.random() * 0.4,
+          duration: 1.5 + Math.random(),
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      }
+    });
+
+    // Cleanup
+    return () => {
+      gsap.killTweensOf(bubbles);
+    };
   }, []);
 
   const fetchTemas = async () => {
@@ -103,7 +165,18 @@ const TemasAdmin = () => {
   };
 
   return (
-    <div className="dashboard-layout">
+    <div className="temas-admin-layout">
+      {/* Animated Bubbles Background */}
+      <div className="temas-animated-bubbles-background">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="temas-bubble"
+            ref={(el) => (bubblesRef.current[i] = el)}
+          />
+        ))}
+      </div>
+
       <Sidebar />
 
       <div className="temas-admin-main">
@@ -114,6 +187,12 @@ const TemasAdmin = () => {
             onClick={() => setShowCreateForm(!showCreateForm)}
           >
             <HiPlus /> Novo Tema
+          </button>
+          <button
+            className="btn-back"
+            onClick={() => navigate(-1)}
+          >
+            <HiArrowLeft /> Voltar
           </button>
         </header>
 
@@ -243,4 +322,3 @@ const TemasAdmin = () => {
 };
 
 export default TemasAdmin;
-
