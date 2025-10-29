@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { temasApi, submissoesApi, quizzesApi } from '../../api/axiosClient.js';
+import { temasApi, quizzesApi } from '../../api/axiosClient.js';
 import { mockApiClient } from '../../api/mockApiClient.js';
 import Sidebar from '../../components/Sidebar/Sidebar.jsx';
-import { HiSparkles, HiClock, HiStar, HiChevronRight, HiArrowLeft, HiLightningBolt } from 'react-icons/hi';
+import AwaitingAI from '../../components/AwaitingAI.jsx';
+import { HiSparkles, HiStar, HiChevronRight, HiArrowLeft, HiLightningBolt } from 'react-icons/hi';
 import './TemaDetail.css';
 
 const useMock = import.meta.env.VITE_USE_MOCK_DATA === 'true';
@@ -19,6 +20,8 @@ const TemaDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [generatingQuiz, setGeneratingQuiz] = useState(false);
+  const [showAwaitingAI, setShowAwaitingAI] = useState(false);
+  const [quizGenerationStartTime, setQuizGenerationStartTime] = useState(null);
 
   const fetchData = async () => {
     setLoading(true);
@@ -104,6 +107,8 @@ const TemaDetail = () => {
 
   const handleGerarNovoQuiz = async () => {
     setGeneratingQuiz(true);
+    setShowAwaitingAI(true);
+    setQuizGenerationStartTime(Date.now());
     setError('');
 
     try {
@@ -117,12 +122,24 @@ const TemaDetail = () => {
       // Backend retorna 201 com { quizz_id }
       const novoQuizzId = response.data.quizz_id;
 
-      // Navegar para o ecrã do quiz
-      navigate(`/quiz/iniciar/${novoQuizzId}`);
+      // Calcular quanto tempo passou desde o início
+      const elapsedTime = Date.now() - quizGenerationStartTime;
+      const minimumDisplayTime = 60000; // 1 minuto em milissegundos
+      const remainingTime = Math.max(0, minimumDisplayTime - elapsedTime);
+
+      // Aguardar o tempo restante para completar 1 minuto
+      setTimeout(() => {
+        setShowAwaitingAI(false);
+        setGeneratingQuiz(false);
+        // Navegar para o ecrã do quiz
+        navigate(`/quiz/iniciar/${novoQuizzId}`);
+      }, remainingTime);
+
     } catch (err) {
       console.error('Erro ao gerar quiz:', err);
       setError(err.response?.data?.message || 'Falha ao gerar novo quiz');
       setGeneratingQuiz(false);
+      setShowAwaitingAI(false);
     }
   };
 
@@ -166,6 +183,11 @@ const TemaDetail = () => {
         </div>
       </div>
     );
+  }
+
+  // Se estiver a gerar quiz, mostrar AwaitingAI
+  if (showAwaitingAI) {
+    return <AwaitingAI />;
   }
 
   return (
