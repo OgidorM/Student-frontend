@@ -106,7 +106,7 @@ const Dashboard = () => {
   };
 
   const startQuiz = (temaId) => {
-    navigate(`/quiz/${temaId}`);
+    navigate(`/tema/${temaId}`);
   };
 
   const handleSearch = (e) => {

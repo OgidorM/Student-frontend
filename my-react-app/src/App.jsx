@@ -7,6 +7,9 @@ import Dashboard from './pages/dashboard/Dashboard.jsx';
 import Quiz from './pages/Quiz';
 import Games from './pages/Games';
 import TemasAdmin from './pages/TemasAdmin/TemasAdmin.jsx';
+import TemaDetail from './pages/TemaDetail/TemaDetail.jsx';
+import SubmissaoDetail from './pages/SubmissaoDetail/SubmissaoDetail.jsx';
+import NovoQuiz from './pages/NovoQuiz/NovoQuiz.jsx';
 import './App.css';
 
 function App() {
@@ -22,6 +25,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tema/:temaId"
+            element={
+              <ProtectedRoute>
+                <TemaDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/submissao/:submissaoId"
+            element={
+              <ProtectedRoute>
+                <SubmissaoDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz/iniciar/:quizzId"
+            element={
+              <ProtectedRoute>
+                <NovoQuiz />
               </ProtectedRoute>
             }
           />
