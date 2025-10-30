@@ -209,7 +209,8 @@
     gap: 32px;
 }
 
-.topic-card-modern {
+/* Topic Card - Novo estilo baseado no design moderno */
+.topic-card {
     background: white;
     border-radius: 20px;
     border: 1px solid #E6E6E6;
@@ -217,38 +218,40 @@
     cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
     overflow: hidden;
-    height: 361px;
     display: flex;
     flex-direction: column;
+    min-height: 320px;
 }
 
-.topic-card-modern:hover {
+.topic-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
-.topic-icon-wrapper {
-    height: 121px;
+.topic-icon {
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: var(--topic-color, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 }
 
-.topic-icon-large {
+.topic-icon svg {
     font-size: 64px;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    color: white;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
 }
 
-.topic-title {
+.topic-name {
     font-family: 'Roboto', sans-serif;
-    font-size: 32px;
-    font-weight: 600;
+    font-size: 28px;
+    font-weight: 700;
     color: #3A373F;
-    padding: 20px 20px 12px;
+    padding: 24px 24px 12px;
+    margin: 0;
     line-height: 1.2;
-    letter-spacing: 0.25px;
 }
 
 .topic-description {
@@ -256,31 +259,78 @@
     font-size: 15px;
     font-weight: 400;
     color: #ABABAB;
-    padding: 0 20px;
-    line-height: 1.4;
+    padding: 0 24px;
+    line-height: 1.5;
     flex: 1;
+    margin: 0 0 20px 0;
 }
 
-.topic-footer {
-    padding: 20px;
-    border-top: 1px solid #F0F0F0;
-    margin-top: auto;
+.topic-btn {
+    margin: 0 24px 24px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #59AAF6 0%, #5667FD 100%);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: calc(100% - 48px);
 }
 
-.topic-author {
+.topic-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(89, 170, 246, 0.4);
+}
+
+/* Admin Access Button */
+.admin-access-section {
+    margin: 30px 50px 20px;
+    padding: 24px 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.admin-access-info h3 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+}
+
+.admin-access-info p {
     font-family: 'Roboto', sans-serif;
     font-size: 15px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.admin-btn {
+    padding: 14px 32px;
+    background: white;
+    color: #667eea;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.author-label {
-    color: #ABABAB;
-    margin-right: 4px;
-}
-
-.author-name {
-    color: #3A373F;
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.3);
 }
 
 /* Stats Grid */
@@ -394,4 +444,32 @@
 .clear-search-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(89, 170, 246, 0.3);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 40px;
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #E6E6E6;
+}
+
+.empty-state p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    color: #ABABAB;
+    margin: 0;
+}
+
+/* Error Message */
+.error-message {
+    background: #fed7d7;
+    color: #c53030;
+    padding: 16px 24px;
+    border-radius: 12px;
+    margin: 20px 50px;
+    border-left: 4px solid #f56565;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
 }

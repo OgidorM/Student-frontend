@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { gsap } from 'gsap';
+import Sidebar from '../components/Sidebar/Sidebar.jsx';
 import './Games.css';
 
 // ==================== CLASSES DO JOGO ====================
@@ -351,7 +353,6 @@ const Games = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [showShop, setShowShop] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [victory, setVictory] = useState(false);
   const [currentLevel, setCurrentLevel] = useState(1);
 
   // Refs do jogo
@@ -371,6 +372,7 @@ const Games = () => {
     e: false,
     ' ': false,
   });
+  const bubblesRef = useRef([]);
 
   // Inicializar jogo com dificuldade escalável
   const initGame = useCallback((level = 1, keepPlayerStats = false) => {
@@ -420,7 +422,6 @@ const Games = () => {
     // Reset de moedas
     coinsRef.current = [];
     setGameOver(false);
-    setVictory(false);
     setShowShop(false);
     setCurrentLevel(level);
   }, []);
@@ -1037,6 +1038,38 @@ const Games = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [gameStarted, render]);
 
+  // Animação das bolhas de fundo
+  useEffect(() => {
+    if (!gameStarted) return;
+
+    const bubbles = bubblesRef.current;
+    const tl = gsap.timeline({ repeat: -1, yoyo: true });
+
+    bubbles.forEach((bubble, index) => {
+      const x = Math.random() * 100 + 50;
+      const y = Math.random() * 100 + 50;
+      const duration = Math.random() * 2 + 2;
+
+      tl.to(bubble, {
+        duration,
+        x: `+=${x}`,
+        y: `+=${y}`,
+        opacity: 0.7,
+        ease: 'power1.inOut',
+      }, 0);
+
+      tl.to(bubble, {
+        duration,
+        x: `-=${x * 2}`,
+        y: `-=${y * 2}`,
+        opacity: 0.3,
+        ease: 'power1.inOut',
+      }, 0);
+    });
+
+    return () => tl.kill();
+  }, [gameStarted]);
+
   const startGame = (game) => {
     setSelectedGame(game);
     setGameStarted(true);
@@ -1047,178 +1080,137 @@ const Games = () => {
     setGameStarted(false);
     setShowShop(false);
     setGameOver(false);
-    setVictory(false);
     setCurrentLevel(1);
   };
 
   const buyWeapon = (weapon) => {
     if (playerRef.current && playerRef.current.buyWeapon(weapon)) {
-      render();
+      // Arma comprada com sucesso
+      return true;
     }
-  };
-
-  const closeShop = () => {
-    setShowShop(false);
+    return false;
   };
 
   const restartGame = () => {
     initGame(1, false);
     setGameOver(false);
-    setVictory(false);
   };
 
-  if (gameStarted) {
-    return (
-      <div className="game-fullscreen">
-        <canvas ref={canvasRef} className="game-canvas-3d" />
-
-        <button className="exit-game-btn" onClick={exitGame}>
-          ✕ Sair do Jogo
-        </button>
-
-        {/* Loja UI */}
-        {showShop && shopRef.current && playerRef.current && (
-          <div className="shop-overlay">
-            <div className="shop-container">
-              <h2>🏪 Loja de Armas</h2>
-              <div className="shop-balance">💰 Suas Moedas: {playerRef.current.coins}</div>
-
-              <div className="shop-items">
-                {shopRef.current.inventory.map((weapon, idx) => {
-                  const owned = playerRef.current.weapons.some(w => w.name === weapon.name);
-                  const canAfford = playerRef.current.coins >= weapon.cost;
-
-                  return (
-                    <div key={idx} className={`shop-item ${owned ? 'owned' : ''}`}>
-                      <div className="shop-item-header">
-                        <h3>{weapon.name}</h3>
-                        {owned && <span className="owned-badge">POSSUI</span>}
-                      </div>
-                      <div className="shop-item-stats">
-                        <div>💥 Dano: {weapon.damage}</div>
-                        <div>⏱️ Cooldown: {weapon.cooldown}ms</div>
-                        <div>🎯 Alcance: {weapon.range}m</div>
-                      </div>
-                      <div className="shop-item-footer">
-                        <div className="shop-item-price">💰 {weapon.cost}</div>
-                        <button
-                          className="shop-buy-btn"
-                          onClick={() => buyWeapon(weapon)}
-                          disabled={owned || !canAfford}
-                        >
-                          {owned ? 'Comprado' : canAfford ? 'Comprar' : 'Sem Moedas'}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <button className="shop-close-btn" onClick={closeShop}>
-                Fechar Loja
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Game Over */}
-        {gameOver && (
-          <div className="game-over-overlay">
-            <div className="game-over-container">
-              <h1>💀 GAME OVER</h1>
-              <p>Você foi derrotado!</p>
-              <div className="game-over-stats">
-                <div>Moedas Coletadas: {playerRef.current.coins}</div>
-                <div>Inimigos Mortos: {enemiesRef.current.filter(e => e.isDead()).length}</div>
-              </div>
-              <div className="game-over-buttons">
-                <button onClick={restartGame}>🔄 Jogar Novamente</button>
-                <button onClick={exitGame}>🚪 Sair</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Vitória */}
-        {victory && (
-          <div className="victory-overlay">
-            <div className="victory-container">
-              <h1>🎉 VITÓRIA!</h1>
-              <p>Você eliminou todos os inimigos!</p>
-              <div className="victory-stats">
-                <div>💰 Moedas: {playerRef.current.coins}</div>
-                <div>❤️ HP Restante: {playerRef.current.hp}/{playerRef.current.maxHp}</div>
-              </div>
-              <div className="victory-buttons">
-                <button onClick={restartGame}>🔄 Novo Nível</button>
-                <button onClick={exitGame}>🚪 Sair</button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
+  // ==================== JSX RENDER ====================
 
   return (
-    <div className="games-page">
-      <div className="games-container">
-        <header className="games-header">
-          <h1>🎮 Jogos de Aprendizagem</h1>
-          <p>Divirta-se enquanto aprende! Escolha um dos nossos jogos educativos.</p>
-        </header>
+    <div className="games-container">
+      <Sidebar />
 
-        <div className="games-grid">
-          <div className="game-card">
-            <div className="game-card-icon">🎯</div>
-            <h3>Doom Roguelike</h3>
-            <p>Um shooter roguelike com geração procedural de níveis, combate tático, economia de moedas e progressão de armas. Elimine todos os inimigos para vencer!</p>
-            <div className="game-card-tags">
-              <span className="tag">3D</span>
-              <span className="tag">Roguelike</span>
-              <span className="tag">Raycasting</span>
-              <span className="tag">Procedural</span>
+      <div className="games-content">
+        {!gameStarted ? (
+          // Menu Principal
+          <div className="game-menu">
+            <div className="menu-card">
+              <h1 className="menu-title">🎮 JOGOS EDUCATIVOS</h1>
+              <p className="menu-subtitle">Escolha um jogo para começar</p>
+
+              <div className="game-selection">
+                <div className="game-option" onClick={() => startGame('doom')}>
+                  <div className="game-icon">🔫</div>
+                  <h3>DOOM Roguelike</h3>
+                  <p>Shooter em primeira pessoa com mapas procedurais</p>
+                  <button className="start-button">Jogar Agora</button>
+                </div>
+
+                <div className="game-option disabled">
+                  <div className="game-icon">🎯</div>
+                  <h3>Em Breve</h3>
+                  <p>Novos jogos em desenvolvimento</p>
+                  <button className="start-button" disabled>Em Breve</button>
+                </div>
+              </div>
             </div>
-            <div className="game-controls-info">
-              <strong>Controles:</strong>
-              <div>W/S - Mover | A/D ou ←→ - Rodar</div>
-              <div>Espaço - Atirar | E - Loja</div>
-            </div>
-            <button className="game-start-btn" onClick={() => startGame('doom')}>
-              Jogar Agora
-            </button>
           </div>
+        ) : (
+          // Jogo Ativo
+          <div className="game-active">
+            <canvas ref={canvasRef} className="game-canvas" />
 
-          <div className="game-card game-card-disabled">
-            <div className="game-card-icon">🧩</div>
-            <h3>Puzzle de Algoritmos</h3>
-            <p>Resolva desafios de lógica e algoritmos. Em breve!</p>
-            <div className="game-card-tags">
-              <span className="tag">Lógica</span>
-              <span className="tag">Em Breve</span>
-            </div>
-            <button className="game-start-btn" disabled>
-              Em Desenvolvimento
+            {/* Botão de Sair */}
+            <button className="exit-game-button" onClick={exitGame}>
+              ❌ Sair do Jogo
             </button>
-          </div>
 
-          <div className="game-card game-card-disabled">
-            <div className="game-card-icon">🚀</div>
-            <h3>Code Runner</h3>
-            <p>Corrida de programação em tempo real. Em breve!</p>
-            <div className="game-card-tags">
-              <span className="tag">Velocidade</span>
-              <span className="tag">Em Breve</span>
+            {/* Modal da Loja */}
+            {showShop && (
+              <div className="shop-modal">
+                <div className="shop-content">
+                  <h2>🏪 LOJA DE ARMAS</h2>
+                  <p className="shop-balance">💰 Suas Moedas: {playerRef.current?.coins || 0}</p>
+
+                  <div className="shop-items">
+                    {shopRef.current?.inventory.map((weapon, index) => {
+                      const owned = playerRef.current?.weapons.some(w => w.name === weapon.name);
+                      return (
+                        <div key={index} className={`shop-item ${owned ? 'owned' : ''}`}>
+                          <div className="weapon-icon">{weapon.texture}</div>
+                          <h3>{weapon.name}</h3>
+                          <p>Dano: {weapon.damage}</p>
+                          <p>Alcance: {weapon.range}m</p>
+                          <p>Recarga: {weapon.cooldown}ms</p>
+                          {owned ? (
+                            <button className="buy-button" disabled>Já Possui</button>
+                          ) : (
+                            <button
+                              className="buy-button"
+                              onClick={() => {
+                                if (buyWeapon(weapon)) {
+                                  alert(`${weapon.name} comprada!`);
+                                } else {
+                                  alert('Moedas insuficientes!');
+                                }
+                              }}
+                            >
+                              Comprar - 💰 {weapon.cost}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <button className="close-shop-button" onClick={() => setShowShop(false)}>
+                    Fechar Loja
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Modal de Game Over */}
+            {gameOver && (
+              <div className="game-over-modal">
+                <div className="game-over-content">
+                  <h1>☠️ GAME OVER</h1>
+                  <p>Você chegou ao nível {currentLevel}</p>
+                  <p>💰 Moedas coletadas: {playerRef.current?.coins || 0}</p>
+                  <div className="game-over-buttons">
+                    <button className="restart-button" onClick={restartGame}>
+                      🔄 Reiniciar
+                    </button>
+                    <button className="menu-button" onClick={exitGame}>
+                      📋 Menu Principal
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Instruções */}
+            <div className="game-instructions">
+              <h3>🎮 Controles</h3>
+              <p>W/S - Mover</p>
+              <p>A/D ou ← → - Girar</p>
+              <p>ESPAÇO - Atirar</p>
+              <p>E - Interagir (Loja/Portal)</p>
             </div>
-            <button className="game-start-btn" disabled>
-              Em Desenvolvimento
-            </button>
           </div>
-        </div>
-
-        <div className="games-footer">
-          <a href="/dashboard/Dashboard" className="back-link">← Voltar ao Dashboard</a>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -1,140 +1,127 @@
-/* Games Page Styles */
-.games-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 40px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* Games Page Styles - DOOM Roguelike com Sidebar */
 
+/* Container principal com sidebar */
 .games-container {
-  max-width: 1200px;
-  width: 100%;
-}
-
-.games-header {
-  text-align: center;
-  margin-bottom: 50px;
-  color: white;
-}
-
-.games-header h1 {
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 48px;
-  font-weight: 700;
-  margin: 0 0 16px 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.games-header p {
-  font-family: 'Roboto', sans-serif;
-  font-size: 20px;
-  font-weight: 400;
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  background: #0D1B2A;
+  position: relative;
+  overflow: hidden;
   margin: 0;
-  opacity: 0.95;
+  padding: 0;
 }
 
-/* Games Grid */
-.games-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 30px;
-  margin-bottom: 40px;
-}
-
-.game-card {
-  background: white;
-  border-radius: 20px;
-  padding: 40px 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Conteúdo principal ajustado para sidebar */
+.games-content {
+  flex: 1;
+  margin-left: 0;
+  position: relative;
+  z-index: 1;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Menu Principal do Jogo */
+.game-menu {
+  width: 100%;
+  height: 100%;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.menu-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 60px 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   text-align: center;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-.game-card:hover:not(.game-card-disabled) {
+.menu-title {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 16px 0;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.menu-subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  color: #cbd5e0;
+  margin: 0 0 40px 0;
+}
+
+.game-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.game-option {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 40px 30px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.game-option:not(.disabled):hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  border-color: #3b82f6;
+  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.4);
 }
 
-.game-card-disabled {
-  opacity: 0.6;
+.game-option.disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.game-card-icon {
-  font-size: 64px;
+.game-icon {
+  font-size: 72px;
   margin-bottom: 20px;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
-.game-card h3 {
+.game-option h3 {
   font-family: 'Ubuntu', sans-serif;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
-  color: #3A373F;
-  margin: 0 0 16px 0;
+  color: #fff;
+  margin: 0 0 12px 0;
 }
 
-.game-card p {
+.game-option p {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
-  font-weight: 400;
-  color: #6B6B6B;
+  color: #cbd5e0;
+  margin: 0 0 24px 0;
   line-height: 1.6;
-  margin: 0 0 20px 0;
-  flex: 1;
 }
 
-.game-card-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 24px;
-}
-
-.tag {
-  font-family: 'Roboto', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  background: #E8F4FD;
-  color: #59AAF6;
-  padding: 6px 12px;
-  border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.game-controls-info {
-  font-family: 'Roboto', sans-serif;
-  font-size: 14px;
-  color: #6B6B6B;
-  margin-bottom: 20px;
-  padding: 15px;
-  background: #f7fafc;
-  border-radius: 12px;
-  width: 100%;
-}
-
-.game-controls-info strong {
-  display: block;
-  margin-bottom: 8px;
-  color: #3A373F;
-}
-
-.game-controls-info div {
-  margin: 4px 0;
-}
-
-.game-start-btn {
+.start-button {
   font-family: 'Ubuntu', sans-serif;
   font-size: 16px;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   border: none;
   padding: 14px 32px;
@@ -142,47 +129,22 @@
   cursor: pointer;
   transition: all 0.3s ease;
   width: 100%;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
-.game-start-btn:hover:not(:disabled) {
+.start-button:hover:not(:disabled) {
   transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.6);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.6);
 }
 
-.game-start-btn:disabled {
-  background: #CCCCCC;
+.start-button:disabled {
+  background: #4a5568;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-/* Footer */
-.games-footer {
-  text-align: center;
-  margin-top: 40px;
-}
-
-.back-link {
-  font-family: 'Roboto', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-  text-decoration: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  display: inline-block;
-}
-
-.back-link:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateX(-4px);
-}
-
-/* Fullscreen Game */
-.game-fullscreen {
+/* Jogo Ativo - Fullscreen */
+.game-active {
   position: fixed;
   top: 0;
   left: 0;
@@ -193,7 +155,7 @@
   overflow: hidden;
 }
 
-.game-canvas-3d {
+.game-canvas {
   display: block;
   width: 100%;
   height: 100%;
@@ -201,14 +163,15 @@
   image-rendering: crisp-edges;
 }
 
-.exit-game-btn {
+/* Botão de Sair do Jogo */
+.exit-game-button {
   position: fixed;
   top: 20px;
-  right: 20px;
+  left: 20px;
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   font-weight: 700;
-  background: rgba(229, 62, 62, 0.9);
+  background: rgba(239, 68, 68, 0.9);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
   padding: 12px 24px;
@@ -217,16 +180,46 @@
   transition: all 0.3s ease;
   z-index: 10000;
   backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
 }
 
-.exit-game-btn:hover {
-  background: rgba(197, 48, 48, 1);
+.exit-game-button:hover {
+  background: rgba(220, 38, 38, 1);
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.5);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.7);
 }
 
-/* Shop Overlay */
-.shop-overlay {
+/* Instruções do Jogo */
+.game-instructions {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px 24px;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  z-index: 10000;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.game-instructions h3 {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #60a5fa;
+}
+
+.game-instructions p {
+  font-size: 14px;
+  margin: 4px 0;
+  color: #e5e7eb;
+}
+
+/* Modal da Loja */
+.shop-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -241,7 +234,7 @@
   animation: fadeIn 0.3s ease;
 }
 
-.shop-container {
+.shop-content {
   background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
   border-radius: 24px;
   padding: 40px;
@@ -249,11 +242,11 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
   border: 2px solid #4a5568;
 }
 
-.shop-container h2 {
+.shop-content h2 {
   font-family: 'Ubuntu', sans-serif;
   font-size: 32px;
   font-weight: 700;
@@ -288,6 +281,7 @@
   padding: 24px;
   border: 2px solid #4a5568;
   transition: all 0.3s ease;
+  text-align: center;
 }
 
 .shop-item:hover:not(.owned) {
@@ -301,60 +295,27 @@
   border-color: #48bb78;
 }
 
-.shop-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.weapon-icon {
+  font-size: 48px;
   margin-bottom: 16px;
 }
 
-.shop-item-header h3 {
+.shop-item h3 {
   font-family: 'Ubuntu', sans-serif;
   font-size: 22px;
   font-weight: 700;
   color: #fff;
-  margin: 0;
+  margin: 0 0 12px 0;
 }
 
-.owned-badge {
-  font-family: 'Roboto', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  background: #48bb78;
-  color: white;
-  padding: 4px 10px;
-  border-radius: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.shop-item-stats {
+.shop-item p {
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
   color: #cbd5e0;
-  margin-bottom: 16px;
-  line-height: 1.8;
-}
-
-.shop-item-stats div {
   margin: 6px 0;
 }
 
-.shop-item-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.shop-item-price {
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: #fbbf24;
-}
-
-.shop-buy-btn {
+.buy-button {
   font-family: 'Ubuntu', sans-serif;
   font-size: 14px;
   font-weight: 700;
@@ -365,21 +326,22 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
-  flex: 1;
+  width: 100%;
+  margin-top: 16px;
 }
 
-.shop-buy-btn:hover:not(:disabled) {
+.buy-button:hover:not(:disabled) {
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
 }
 
-.shop-buy-btn:disabled {
+.buy-button:disabled {
   background: #4a5568;
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-.shop-close-btn {
+.close-shop-button {
   font-family: 'Ubuntu', sans-serif;
   font-size: 16px;
   font-weight: 700;
@@ -393,15 +355,14 @@
   width: 100%;
 }
 
-.shop-close-btn:hover {
+.close-shop-button:hover {
   background: rgba(220, 38, 38, 1);
   border-color: rgba(220, 38, 38, 1);
   transform: scale(1.02);
 }
 
-/* Game Over Overlay */
-.game-over-overlay,
-.victory-overlay {
+/* Modal de Game Over */
+.game-over-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -416,79 +377,42 @@
   animation: fadeIn 0.5s ease;
 }
 
-.game-over-container,
-.victory-container {
+.game-over-content {
   background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   border-radius: 24px;
   padding: 50px 60px;
   text-align: center;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-  border: 3px solid;
+  border: 3px solid #ef4444;
   max-width: 500px;
   width: 90%;
   animation: slideUp 0.5s ease;
 }
 
-.game-over-container {
-  border-color: #ef4444;
-}
-
-.victory-container {
-  border-color: #48bb78;
-}
-
-.game-over-container h1,
-.victory-container h1 {
+.game-over-content h1 {
   font-family: 'Ubuntu', sans-serif;
   font-size: 48px;
   font-weight: 700;
   margin: 0 0 16px 0;
-}
-
-.game-over-container h1 {
   color: #ef4444;
   text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
 }
 
-.victory-container h1 {
-  color: #48bb78;
-  text-shadow: 0 0 20px rgba(72, 187, 120, 0.5);
-}
-
-.game-over-container p,
-.victory-container p {
+.game-over-content p {
   font-family: 'Roboto', sans-serif;
   font-size: 20px;
   color: #cbd5e0;
   margin: 0 0 30px 0;
 }
 
-.game-over-stats,
-.victory-stats {
-  font-family: 'Roboto', sans-serif;
-  font-size: 18px;
-  color: #e5e7eb;
-  margin-bottom: 30px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.game-over-stats div,
-.victory-stats div {
-  margin: 10px 0;
-}
-
-.game-over-buttons,
-.victory-buttons {
+.game-over-buttons {
   display: flex;
   gap: 16px;
   justify-content: center;
 }
 
-.game-over-buttons button,
-.victory-buttons button {
+.restart-button,
+.menu-button {
   font-family: 'Ubuntu', sans-serif;
   font-size: 16px;
   font-weight: 700;
@@ -501,24 +425,20 @@
   flex: 1;
 }
 
-.game-over-buttons button:first-child,
-.victory-buttons button:first-child {
+.restart-button {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
-.game-over-buttons button:first-child:hover,
-.victory-buttons button:first-child:hover {
+.restart-button:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
 }
 
-.game-over-buttons button:last-child,
-.victory-buttons button:last-child {
+.menu-button {
   background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
 }
 
-.game-over-buttons button:last-child:hover,
-.victory-buttons button:last-child:hover {
+.menu-button:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(107, 114, 128, 0.5);
 }
@@ -544,57 +464,43 @@
   }
 }
 
-.game-card {
-  animation: fadeIn 0.5s ease-out;
-}
-
-.game-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.game-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.game-card:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
-  .games-page {
-    padding: 20px 10px;
+  .menu-card {
+    padding: 40px 30px;
   }
 
-  .games-header h1 {
+  .menu-title {
     font-size: 36px;
   }
 
-  .games-header p {
+  .menu-subtitle {
     font-size: 16px;
   }
 
-  .games-grid {
+  .game-selection {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .game-card {
-    padding: 30px 20px;
+  .game-icon {
+    font-size: 56px;
   }
 
-  .game-card-icon {
-    font-size: 48px;
-  }
-
-  .exit-game-btn {
+  .exit-game-button {
     top: 10px;
-    right: 10px;
+    left: 10px;
     padding: 10px 16px;
     font-size: 14px;
   }
 
-  .shop-container {
+  .game-instructions {
+    bottom: 10px;
+    left: 10px;
+    padding: 16px 20px;
+  }
+
+  .shop-content {
     padding: 30px 20px;
   }
 
@@ -602,18 +508,15 @@
     grid-template-columns: 1fr;
   }
 
-  .game-over-container,
-  .victory-container {
+  .game-over-content {
     padding: 40px 30px;
   }
 
-  .game-over-container h1,
-  .victory-container h1 {
+  .game-over-content h1 {
     font-size: 36px;
   }
 
-  .game-over-buttons,
-  .victory-buttons {
+  .game-over-buttons {
     flex-direction: column;
   }
 }
